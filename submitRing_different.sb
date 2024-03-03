@@ -1,0 +1,18 @@
+#!/bin/bash
+########## Define Resources Needed with SBATCH Lines ##########
+ 
+#SBATCH --time=00:10:00
+#SBATCH --ntasks=2
+#SBATCh --nodes=2             
+#SBATCH --ntasks-per-node=1              
+#SBATCH --mem=100MB                    
+#SBATCH --job-name Ring_different    
+
+# compile
+
+mpicxx src/RingBlocking.cpp -o RingBlocking
+
+MessageSize=(2 4 8 16 32 64 128 256 512 1024 2048 4096)
+for Size in "${MessageSize[@]}"; do
+    mpiexec -n 2 RingBlocking  "$Size" "100" data/Ring_different.csv
+done
