@@ -12,7 +12,8 @@
 mpicxx src/RingNonBlocking.cpp -o RingNonBlocking
 
 MessageSize=(2 4 8 16 32 64 128 256 512 1024 2048 4096)
+nTasks=(2 4 8 16 32 64 128 256)
 for Size in "${MessageSize[@]}"; do
-    mpiexec -n 2 RingNonBlocking  "$Size" "100" data/RingNonBlocking_same.csv
+    mpiexec -n 2 RingNonBlocking  "$Size" "100" data/RingNonBlocking.csv
 done
 
