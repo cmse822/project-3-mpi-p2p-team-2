@@ -67,13 +67,13 @@ int main(int argc, char* argv[]){
             }
 
         } else if (rank == 1){
-            int status_code_r1 = MPI_Recv(message,S,MPI_CHAR,0,0,comm,&status);
-            MPI_Send(message,S,MPI_CHAR,0,0,comm);
-
-            // check the successful communication of MPI_send and receive
+            int status_code_r1 = MPI_Recv(message,S,MPI_CHAR,0,0,comm,&status);// check the successful communication of MPI_send and receive
             if (status_code_r1 == MPI_SUCCESS) {
                 outfile << "MPI_Send operation was successful for rank == " << rank << std::endl;
             }
+            MPI_Send(message,S,MPI_CHAR,0,0,comm);
+
+            
         }
 
         
