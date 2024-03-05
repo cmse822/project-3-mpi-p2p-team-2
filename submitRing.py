@@ -1,5 +1,5 @@
 import os
-for x in (2**p for p in range(1, 3)):
+for x in (2**p for p in range(1,12)):
     parameters_string = f"""#!/bin/bash
 ########## Define Resources Needed with SBATCH Lines ##########
 
