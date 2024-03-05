@@ -63,7 +63,7 @@ int main(int argc, char* argv[]){
 
             // check the successful communication of MPI_send and receive
             if (status_code_r0 == MPI_SUCCESS) {
-                outfile << "MPI_Send operation was successful." << std::endl;
+                outfile << "MPI_Send operation was successful for rank == " << rank << std::endl;
             }
 
         } else if (rank == 1){
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]){
 
             // check the successful communication of MPI_send and receive
             if (status_code_r1 == MPI_SUCCESS) {
-                outfile << "MPI_Send operation was successful." << std::endl;
+                outfile << "MPI_Send operation was successful for rank == " << rank << std::endl;
             }
         }
 
