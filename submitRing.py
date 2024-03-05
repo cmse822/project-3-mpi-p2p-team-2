@@ -1,5 +1,5 @@
 import os
-for x in (2**p for p in range(1,12)):
+for x in (2**p for p in range(1,10)):
     parameters_string = f"""#!/bin/bash
 ########## Define Resources Needed with SBATCH Lines ##########
 
@@ -7,7 +7,7 @@ for x in (2**p for p in range(1,12)):
 #SBATCH --nodes=2         
 #SBATCH --ntasks-per-node={int(x/2)}                 
 #SBATCH --mem=100MB                    
-#SBATCH --job-name RingSameNode
+#SBATCH --job-name RingSameNode_{x}
 """
 
     compilation_string1="""
