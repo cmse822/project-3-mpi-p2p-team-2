@@ -13,6 +13,7 @@ int main(int argc, char* argv[]){
 
     std::string file_name;
     std::fstream file_stream;
+    std::ofstream outfile("mpi_status.log", std::ios_base::app); // Open the file in append mode
 
     MPI_Comm comm = MPI_COMM_WORLD;
     MPI_Status status;
@@ -58,11 +59,24 @@ int main(int argc, char* argv[]){
         // Send/receive message
         if (rank == 0){
             MPI_Send(message,S,MPI_CHAR,1,0,comm);
-            MPI_Recv(message,S,MPI_CHAR,1,0,comm,&status);
+            int status_code_r0 = MPI_Recv(message,S,MPI_CHAR,1,0,comm,&status);
+
+            // check the successful communication of MPI_send and receive
+            if (status_code_r0 == MPI_SUCCESS) {
+                outfile << "MPI_Send operation was successful for rank == " << rank << std::endl;
+            }
+
         } else if (rank == 1){
-            MPI_Recv(message,S,MPI_CHAR,0,0,comm,&status);
+            int status_code_r1 = MPI_Recv(message,S,MPI_CHAR,0,0,comm,&status);// check the successful communication of MPI_send and receive
+            if (status_code_r1 == MPI_SUCCESS) {
+                outfile << "MPI_Send operation was successful for rank == " << rank << std::endl;
+            }
             MPI_Send(message,S,MPI_CHAR,0,0,comm);
+
+            
         }
+
+        
 
         // Stop timer
         stop = MPI_Wtime();
@@ -75,6 +89,8 @@ int main(int argc, char* argv[]){
 
     // Deallocate memory
     delete[] message;
+
+    outfile.close(); // close the file
 
     // End communication
     MPI_Finalize();
