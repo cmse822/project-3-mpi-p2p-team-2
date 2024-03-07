@@ -7,16 +7,16 @@ for x in (2**p for p in range(1,10)):
 #SBATCH --nodes=2         
 #SBATCH --ntasks-per-node={int(x/2)}                 
 #SBATCH --mem=100MB                    
-#SBATCH --job-name RingBlocking_{x}
+#SBATCH --job-name RingNonBlocking_{x}
 """
 
     compilation_string1="""
-mpicxx src/RingBlocking.cpp -o RingBlocking
+mpicxx src/RingNonBlocking.cpp -o RingNonBlocking
 
 MessageSize=(2 4 8 16 32 64 128 256 512 1024 2048 4096)
 for Size in "${MessageSize[@]}"; do"""
     compilation_string2=f"""
-    mpiexec -n "$task" RingBlocking  "$Size" "100" data/Ring_{int(x)}.csv
+    mpiexec -n "$task" RingNonBlocking  "$Size" "100" data/RingNonBlocking_{int(x)}.csv
 done
 """
     with open(f"submitRing_{x}.sb", "w") as file:
