@@ -61,16 +61,16 @@ int main(int argc, char* argv[]){
             MPI_Send(message,S,MPI_CHAR,1,0,comm);
             int status_code_r0 = MPI_Recv(message,S,MPI_CHAR,1,0,comm,&status);
 
-            // check the successful communication of MPI_send and receive
-            if (status_code_r0 == MPI_SUCCESS) {
-                outfile << "MPI_Send operation was successful for rank == " << rank << std::endl;
-            }
+            // // check the successful communication of MPI_send and receive
+            // if (status_code_r0 == MPI_SUCCESS) {
+            //     outfile << "MPI_Send operation was successful for rank == " << rank << std::endl;
+            // }
 
         } else if (rank == 1){
             int status_code_r1 = MPI_Recv(message,S,MPI_CHAR,0,0,comm,&status);// check the successful communication of MPI_send and receive
-            if (status_code_r1 == MPI_SUCCESS) {
-                outfile << "MPI_Send operation was successful for rank == " << rank << std::endl;
-            }
+            // if (status_code_r1 == MPI_SUCCESS) {
+            //     outfile << "MPI_Send operation was successful for rank == " << rank << std::endl;
+            // }
             MPI_Send(message,S,MPI_CHAR,0,0,comm);
 
             
