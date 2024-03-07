@@ -39,14 +39,17 @@ $B = \frac{2}{\beta} \times 10^{-9}$
 
 where $B$ is the bandwidth (GB/s), and we have $2$ at the numinator as the communication time is corresponds to $2 \times s$. 
 
-Based on the results, it was observed that the _latency_ of the system on the `amr` nodes were about $2.3 \mu s$
+The _latency_ and _bandwidth_ results from the previous figure has been summarized in the following table. As this table shows, the _latency_ of the system on the `amr` nodes were about $2.36 \mu s$. On the other hand, the _latency_ of the system when two processess were located on two different physical nodes were found to be abount $35.7 \mu s$, which was about 15 times higher than the situation where two processess are located on the same node. 
 
+Senario | _Latency_ ($\mu s$) | _Bandwidth_ ($GB/s$)
+--|--|--
+On node / Blocking    | 2.47   | 9.65
+Off node/ Blocking    | 34.11  | 10.23
+On node / NonBlocking | 2.25   | 10.18
+Off node/ NonBlocking | 37.42  | 11.21
 
+Moreover, the results showed that the _bandwidth_ for all scenarios (includeing on/off nodes and blocking/nonblocking) were almost similar and about $10 GB/s$. 
 Reason why bandwidth are similar.
 
 5. Plot the average communication time of a single exchange (send and receive) as a function of message size for the two cases. Using this plot, estimate the _latency_ and _bandwidth_ for each case. Are they different? Explain your results.
 6. Analyze and discuss your results. Explain the behavior of the resulting curves.
-
-## Part 2: Non-block Ping-Pong
-
-Repeat Part 1 using non-blocking MPI communication, i.e., using `MPI_Isend()` and `MPI_Irecv()`. You will need to include explicit process synchronization using, e.g., `MPI_Wait()` calls. Compare the results to the blocking case.
