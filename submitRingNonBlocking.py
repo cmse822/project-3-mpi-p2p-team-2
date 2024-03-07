@@ -20,9 +20,9 @@ for Size in "${MessageSize[@]}"; do"""
     mpiexec -n "$task" RingNonBlocking  "$Size" "100" data/RingNonBlocking_{int(x)}.csv
 done
 """
-    with open(f"submitRing_{x}.sb", "w") as file:
+    with open(f"submitRingNonBlocking_{x}.sb", "w") as file:
         # Writing data to a file
         file.write(parameters_string)
         file.write(compilation_string1)
         file.write(compilation_string2)
-    os.system(f'sbatch submitRing_{x}.sb')
+    os.system(f'sbatch submitRingNonBlocking_{x}.sb')
