@@ -9,7 +9,7 @@ int main(int argc, char* argv[]){
     int num_tasks;
     int rank;
     char* message;
-    double start, stop;
+    double start, time, mean;
 
     std::string file_name;
     std::fstream file_stream;
@@ -64,13 +64,22 @@ int main(int argc, char* argv[]){
  
 
         // Stop timer
-        stop = MPI_Wtime();
+        time = MPI_Wtime() - start;
 
-        if (rank == 0){
-            std::cout << stop-start << std::endl;
-            file_stream << i << "," << num_tasks << "," << S << "," << stop-start << std::endl;
-        }
+        // Add all of the measurements
+        MPI_Reduce(&time, &mean, 1, MPI_DOUBLE, MPI_SUM, 0, comm);
+
+	if (rank == 0){
+	    // Calculate the mean
+	    mean = mean / num_tasks;
+   
+	    // Print to file
+	    file_stream << i << "," << S << "," << num_tasks << "," << mean << std::endl;
+	}
     }
+
+    // Close file stream
+    file_stream.close();
 
     // Deallocate memory
     delete[] message;
