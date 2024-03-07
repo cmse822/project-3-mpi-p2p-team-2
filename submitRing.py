@@ -14,7 +14,7 @@ for x in (2**p for p in range(1,8)):
     compilation_string1="""
 mpicxx src/RingBlocking.cpp -o RingBlocking
 
-MessageSize=(2 4 8 16 32 64 128 256 512 1024 2048 4096)
+MessageSize=(2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576 2097152 4194304 8388608 16777216)
 for Size in "${MessageSize[@]}"; do"""
     compilation_string2=f"""
     mpiexec -n "$task" RingBlocking  "$Size" "100" data/Ring_{int(x)}.csv
