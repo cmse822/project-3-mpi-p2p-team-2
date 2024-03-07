@@ -8,6 +8,7 @@ for x in (2**p for p in range(1,10)):
 #SBATCH --ntasks-per-node={int(x/2)}                 
 #SBATCH --mem=100MB                    
 #SBATCH --job-name RingNonBlocking_{x}
+#SBATCH --constraint=amr
 """
 
     compilation_string1="""
