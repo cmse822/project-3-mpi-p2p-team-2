@@ -1,0 +1,52 @@
+# Project 3: MPI Ping-Pong and Ring Shift
+
+
+
+## Part 1: Ping-Pong test
+
+In the first part of the project, we implemented the Ping-Pong test using both blocking and non-blocking communication. In this regard, the following points are noted:
+
+* For the blocking scheme, the `MPI_Send()` and `MPI_Recv()` functions were used, while for the `MPI_Isend()` and `MPI_Irecv()` used for the non-blocking scheme. 
+
+* The C++ codes can be found under './src' directory, titled: `PingPongBlocking.cpp` and `PingPongNonBlocking.cpp`. In these codes, the message size, number of iterations, and the path to the result csv are inputs.
+
+* The runtime for one complete communication between two ranks were timed using the `MPI_Wtime()` function. 
+
+* 100 ping-pong iteration was used to overcome the noise effect on the timing data. Still, the middle 80 datapoints used for averaging the communication time. 
+
+* A wide range of message sizes were used for this project from 2 bytes to 16 MB. This way, we made sure to collect data for evaluating both latency and bandwidth of the model.
+
+* Both blocking and non-blocking ping-pong test models were run on either same node (on node) and different nodes (off nodes). This process was controlled by `SLURM`. 
+
+    * A constraint of using similar nodes has been used in job file to make sure all runs using similar resources: `#SBATCH --constraint=amr`
+
+    * For the on node analysis, only one node and 2 task per each node was requested, while for the off node analysis, two nodes and one task per node was used.
+
+* During the Ping-Pong process, for a given message size `s`, the amount of data transfering between the first and second processess is $2 \times s$, reason being that the data is send by the first process to the second one, and then the send by the second and recieved by first. But, the timing is for the whole back-forth set. This ponit has been implemented in the calculation of the bandwidth.
+
+
+The Blocking and Non-blocking ping-pong has been run on HPCC `amr` type of nodes using both single node (on node) and two different physical nodes (off nodes). The average communication time as a function of the message size has been shown below:
+
+![plot_pingpong](Analysis/Fig01_PingPong.png)
+
+As shown in the above figure, the communication run time of the ping-pong test was somehow stabilized up to a certain message size, which can be used to calculate the _latency_. However, after that point, the slope of curve can be used for calculation of the _bandwidth_. In this regard, a linear model has been used to fit to the data as follows:
+
+$T = \alpha + \beta \times x$
+
+where $T$ is the runtime communication, $x$ is the message size (bytes), $\alpha$ is the latency (s), and $\beta$ is used for calculation of the bandwidth using the following equation:
+
+$B = \frac{2}{\beta} \times 10^{-9}$
+
+where $B$ is the bandwidth (GB/s), and we have $2$ at the numinator as the communication time is corresponds to $2 \times s$. 
+
+Based on the results, it was observed that the _latency_ of the system on the `amr` nodes were about $2.3 \mu s$
+
+
+Reason why bandwidth are similar.
+
+5. Plot the average communication time of a single exchange (send and receive) as a function of message size for the two cases. Using this plot, estimate the _latency_ and _bandwidth_ for each case. Are they different? Explain your results.
+6. Analyze and discuss your results. Explain the behavior of the resulting curves.
+
+## Part 2: Non-block Ping-Pong
+
+Repeat Part 1 using non-blocking MPI communication, i.e., using `MPI_Isend()` and `MPI_Irecv()`. You will need to include explicit process synchronization using, e.g., `MPI_Wait()` calls. Compare the results to the blocking case.
