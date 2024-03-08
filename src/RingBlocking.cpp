@@ -58,7 +58,7 @@ int main(int argc, char* argv[]){
         start = MPI_Wtime();
 
 	// Send and receive message
-	MPI_Sendrecv(message,S,MPI_CHAR,(rank+1)%num_tasks,0,
+    MPI_Sendrecv(message,S,MPI_CHAR,(rank+1)%num_tasks,0,
                      message,S,MPI_CHAR,(rank-1)%num_tasks,0,
 		     comm,MPI_STATUS_IGNORE);
  
