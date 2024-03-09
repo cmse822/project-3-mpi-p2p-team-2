@@ -38,7 +38,7 @@ def main():
             cont += f"#SBATCH --nodelist=amr-[205-{205+Nnode-1}] \n\n\n"
             # Define the compilation part.
             cont += f"# Compiling part \n"
-            cont += f"# mpicxx src/RingNonBlocking.cpp -o RingNonBlocking \n\n\n"
+            cont += f"mpicxx src/RingNonBlocking.cpp -o RingNonBlocking \n\n\n"
             # Define the bash part.
             cont += f"# Bash part. \n"
             cont += f"MessageSize=(2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576 2097152 4194304 8388608 16777216) \n"
