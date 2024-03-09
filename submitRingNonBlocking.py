@@ -1,28 +1,59 @@
+# Title: Generate job files for the Non-blocking Ring Shift test at different configurations.
+#
+#
+# Author: Team 2 of CMSE 822 class.
+# Date: 03/08/2024
+# ===========================================================================================
+
+# Importing the required libraries.
 import os
-for x in (2**p for p in range(1,8)):
-    parameters_string = f"""#!/bin/bash
-########## Define Resources Needed with SBATCH Lines ##########
 
-#SBATCH --time=04:00:00
-#SBATCH --nodes=2         
-#SBATCH --ntasks-per-node={int(x/2)}                 
-#SBATCH --mem=100MB                    
-#SBATCH --job-name RingNonBlocking_{x}
-#SBATCH --constraint=amr
-"""
+# User defined variables.
+Config = [
+    {'NumNodes': 1, 'Ntasks': [2, 4, 8, 16, 32, 64, 128]}, 
+    {'NumNodes': 2, 'Ntasks': [2, 4, 8, 16, 32, 64, 128]}, 
+    {'NumNodes': 4, 'Ntasks': [4, 8, 16, 32, 64, 128]}, 
+    {'NumNodes': 8, 'Ntasks': [8, 16, 32, 64, 128]}, 
+    {'NumNodes': 16, 'Ntasks': [16, 32, 64, 128]}
+]
 
-    compilation_string1="""
-mpicxx src/RingNonBlocking.cpp -o RingNonBlocking
 
-MessageSize=(2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576 2097152 4194304 8388608 16777216)
-for Size in "${MessageSize[@]}"; do"""
-    compilation_string2=f"""
-    mpiexec -n "$task" RingNonBlocking  "$Size" "100" data/RingNonBlocking_{int(x)}.csv
-done
-"""
-    with open(f"submitRingNonBlocking_{x}.sb", "w") as file:
-        # Writing data to a file
-        file.write(parameters_string)
-        file.write(compilation_string1)
-        file.write(compilation_string2)
-    os.system(f'sbatch submitRingNonBlocking_{x}.sb')
+def main():
+
+    for conf in Config:
+        Nnode = conf['NumNodes']
+        for Ntasks in conf['Ntasks']:
+            Ntask_node = int(Ntasks / Nnode)
+            Name = f'NonBlock_n{Nnode}_t{Ntasks}'
+            Name2= f'N{Nnode}_T{Ntasks}'
+            # Define the header.
+            cont  = f"#!/bin/bash \n"
+            cont += f"########## Define Resources Needed with SBATCH Lines ##########\n\n"
+            cont += f"#SBATCH --time=00:30:00 \n"
+            cont += f"#SBATCH --ntasks={Ntasks} \n"
+            cont += f"#SBATCh --nodes={Nnode} \n"
+            cont += f"#SBATCH --ntasks-per-node={Ntask_node} \n" 
+            cont += f"#SBATCH --mem-per-cpu=100MB \n"
+            cont += f"#SBATCH --job-name {Name2} \n"
+            cont += f"#SBATCH --nodelist=amr-[205-{205+Nnode-1}] \n\n\n"
+            # Define the compilation part.
+            cont += f"# Compiling part \n"
+            cont += f"# mpicxx src/RingNonBlocking.cpp -o RingNonBlocking \n\n\n"
+            # Define the bash part.
+            cont += f"# Bash part. \n"
+            cont += f"MessageSize=(2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576 2097152 4194304 8388608 16777216) \n"
+            cont += 'for Size in "${MessageSize[@]}"; do \n'
+            cont += f'\tmpiexec -n "{Ntasks}" RingNonBlocking  "$Size" "100" data/Ring_{Name}.csv \n'
+            cont += f'done \n'
+
+            # Save the job file.
+            JobName = f'submitRingNonBlock_{Name2}.sb'
+            with open(JobName, 'w') as file:
+                file.write(cont)
+    
+            # Submit the job.
+            os.system(f"sbatch {JobName}")
+
+
+if __name__ == '__main__':
+    main()
