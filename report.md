@@ -45,12 +45,12 @@ The _latency_ and _bandwidth_ results from the previous figure has been summariz
 
 Senario | _Latency_ ($\mu s$) | _Bandwidth_ ($GB/s$)
 --|--|--
-On node / Blocking    | 2.47   | 9.65
-Off node/ Blocking    | 34.11  | 10.23
-On node / NonBlocking | 2.25   | 10.18
-Off node/ NonBlocking | 37.42  | 11.21
+On node / Blocking    | 2.47   | 0.99
+Off node/ Blocking    | 34.11  | 1.04
+On node / NonBlocking | 2.25   | 0.99
+Off node/ NonBlocking | 37.42  | 1.04
 
-Moreover, the results showed that the _bandwidth_ for all scenarios (includeing on/off nodes and blocking/nonblocking) were almost similar and about $10 GB/s$. Considering implementation of the high-speed network in HPCC and similar facilities, the _bandwidth_ results verified this fact, where the _bandwidth_ of the on/off node runs were almost identical. However, it should be mentioned that the _bandwidth_ is an indicator of the rate of data transfer, while for ping-pong runs on off nodes, although high _bandwidth_ available through the high speed networks, the runtimes still higher because of the physical distances and communications needed. 
+Moreover, the results showed that the _bandwidth_ for all scenarios (includeing on/off nodes and blocking/nonblocking) were almost similar and about $1 GB/s$. Considering implementation of the high-speed network in HPCC and similar facilities, the _bandwidth_ results verified this fact, where the _bandwidth_ of the on/off node runs were almost identical. However, it should be mentioned that the _bandwidth_ is an indicator of the rate of data transfer, while for ping-pong runs on off nodes, although high _bandwidth_ available through the high speed networks, the runtimes still higher because of the physical distances and communications needed. 
 
 
 
