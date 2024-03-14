@@ -88,11 +88,37 @@ In the second part of the project, we implemented the Ring Shift test using both
 
 The Blocking and Non-blocking Ring Shift has been run on HPCC `amr` type of nodes using all combinations of the number of nodes and tanks, as defined in the previous table. The average communication time as a function of the message size has been shown below:
 
-![plot_ringshift](Analysis/Fig03_RingShift.png)
+<img src="Analysis/Fig02_RingShift.png" width="1200">
 
+As shown in the above figure, the message sizes of less than 500KB clearly shows the system _latency_ while bigger message sizes can be used to calculate the system's _bandwidth_. For this purpose, the linear model as shown in Part 1, was fitted to the data for calculation of the _latency_ and _bandwidth_. It is noted that the second portion the curve (last 6 data points) were used for more accurate calculation of the system _bandwidth_. The results are presented in the following table:
 
+| # nodes | # tasks | # task/node | Block - _latency_ ($\mu s$) | Block - _bandwidth ($GB/s$) | NonBlock - _latency_ ($\mu s$) | NonBlock - _bandwidth_ ($GB/s$) |
+|---|---|---|---|---|---|---|
+| 1 (on node) | 2 | 2 | 50.2 | 2.09 | 75.8 | 2.14 |
+| 1 (on node) | 4 | 4 | 72.6 | 1.56 | 116.3 | 2.11 |
+| 2 | 2 | 1 | 77.6 | 0.11 | 92.2 | 0.07 |
+| 2 | 4 | 2 | 95.6 | 0.12 | 100.0 | 0.08 |
+| 2 | 8 | 4 | 123.8 | 0.21 | 113.5 | 0.06 |
+| 4 | 4 | 1 | 102.9 | 0.19 | 184.2 | 0.08 |
+| 4 | 8 | 2 | 110.1 | 0.17 | 207.5 | 0.09 |
+| 4 | 16 | 4 | 164.2 | 0.12 | 210.3 | 0.06 |
+| 8 | 8 | 1 | 119.4 | 0.19 | 123.3 | 0.09 |
+| 8 | 16 | 2 | 132.4 | 0.08 | 122.2 | 0.10 |
+| 8 | 32 | 4 | 125.6 | 0.16 | 129.7 | 0.09 |
+| 16 | 16 | 1 | 130.8 | 0.10 | 172.8 | 0.11 |
+| 16 | 32 | 2 | 132.8 | 0.18 | 167.9 | 0.19 |
+| 16 | 64 | 4 | 130.1 | 0.17 | 177.0 | 0.11 |
 
-2. As in Parts 1 and 2, vary the message size from 2 bytes to 4 kb, in powers of 2. Also vary the number of processes used from 2 to `N`, in powers of 2, where `N` is sufficiently large that rank 0 and rank `N-1` are guaranteed to reside on separate nodes (`N` will depend on which cluster you are using on HPCC).
-3. Compute the bandwidth and latency, as above. Plot the bandwidth as a function of message size. Include separate lines for each number of processes used. 
-4. Analyze and discuss your results. Explain the behavior of the resulting curves.
+As this table shows, the _latency_ of the on node ring shift were significantly lower than those of the off node ring shift, where the average on node _latency_ was $78.7 \mu s$, while the average off node _latency_ was $135.26 \mu s$. Such a finding make sense as off node calculations required more time for completing the comminucations. Also, it has been observed that the latency of the system increases with the increase in the number of tasks, which is shown in the figure below. This observation also justified as more tasks (bigger ring) required more overhead time to set up and transfer the message. 
+
+<img src="Analysis/Fig03_RingShift_Latency.png" width="500">
+
+ .
+
+In terms of the _bandwidth_, the results showed that the on node calculations had significantly higher _bandwidth_ compared with those run off node. More specifically, the average _bandwidth_ of the On node Ring shift test was about $1.98 GB/s$, while the _bandwidth_ of the off node ring shift test was about $0.12 GB/s$.
+
+The _bandwidth_ results as a function of the tasks has been plotted as below. This figure highlighted the previous discussion about the significantly lower _bandwidth_ of the off node calculations in the ring shift test. This results can be justified given the fact that in the on node calculations, the processes access the memory locations that are avialable on the same nodes using the high speed on node connections, while for the off node calculations, one processor might need to access a memory location that is located on different node. Such access should be made through the network and therefore, the lower _bandwidth_ was calculated as the results.
+
+<img src="Analysis/Fig04_RingShift_bandwidth.png" width="500">
+
 
