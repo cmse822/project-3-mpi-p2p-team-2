@@ -47,23 +47,24 @@ int main(int argc, char* argv[]){
     MPI_Comm_size(comm, &num_tasks);
     MPI_Comm_rank(comm, &rank);
 
-    // Allocate memory
-    message = new char[S];
-
     // Declare request object
     MPI_Request request;
 
     for (int i = 0; i < N; i++){
+
+        // Allocate memory
+        message = new char[S];
+
         // Start timer
         start = MPI_Wtime();
 
-	// Send message to the next rank
-	MPI_Isend(message, S, MPI_CHAR, (rank+1) % num_tasks, 0, comm, &request);
-	MPI_Request_free(&request);
+        // Send message to the next rank
+        MPI_Isend(message, S, MPI_CHAR, (rank+1) % num_tasks, 0, comm, &request);
+        MPI_Request_free(&request);
 
-	// Receive message from the previous rank
-	MPI_Irecv(message, S, MPI_CHAR, (rank-1) % num_tasks, 0, comm, &request);
-	MPI_Wait(&request, MPI_STATUS_IGNORE);
+        // Receive message from the previous rank
+        MPI_Irecv(message, S, MPI_CHAR, (rank-1) % num_tasks, 0, comm, &request);
+        MPI_Wait(&request, MPI_STATUS_IGNORE);
 
         // Stop timer
         time = MPI_Wtime() - start;
@@ -84,7 +85,7 @@ int main(int argc, char* argv[]){
     file_stream.close();
 
     // Deallocate memory
-    delete[] message;
+    // delete[] message;
 
     // End communication
     MPI_Finalize();

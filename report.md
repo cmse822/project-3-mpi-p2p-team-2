@@ -56,15 +56,43 @@ Moreover, the results showed that the _bandwidth_ for all scenarios (includeing 
 
 ## Part 2: Ring Shift test
 
-1. Implement the MPI ring shift in C or C++ for an arbitrary number of processes in the ring and arbitrary message size (i.e., number of elements per process). In your implementation, use `MPI_Sendrecv()` instead of separate `MPI_Send()` and `MPI_Recv()` calls.
+
+In the second part of the project, we implemented the Ring Shift test using both blocking and non-blocking communication. In this regard, the following points are noted:
+
+* For the blocking scheme, the `MPI_Sendrecv()` function was used, while for the `MPI_Isend()` and `MPI_Irecv()` functions used for the non-blocking scheme. 
+
+* The C++ codes can be found under './src' directory, titled: `RingBlocking.cpp` and `RingNonBlocking.cpp`. In these codes, the message size, number of iterations, and the path to the result csv are inputs.
+
+* The runtime for one complete communication was timed by each rank. This complete communication means to send a message for the next rank in the ring and recieve the message from the previous rank in the ring. Then, each rank calculates the runtime of its complete comminucation and then a `MPI_Reduce` function is used to average the runtimes over all ranks. This average value was then used in the analysis. 
+
+* 100 Ring Shift iteration was used to overcome the noise effect on the timing data. Still, the middle 80 datapoints used for averaging the communication time. 
+
+* A wide range of message sizes were used for this project from 2 bytes to 16 MB. This way, we made sure to collect data for evaluating both latency and bandwidth of the model.
+
+* Both blocking and non-blocking Ring Shift test models were run on either same node (on node) and different nodes (off nodes). This process was controlled by `SLURM`. 
+
+    * A constraint of using similar nodes has been used in job file to make sure all runs using similar resources: `#SBATCH --constraint=amr`
+
+    * The following shows different combinations used for ring shift:
+
+| Num Nodes | Num Tasks per Node | Total number of Tasks | 
+|--|--|--|
+| 1 | 2, 4, 8, 16, 32, 64, 128 | 2, 4, 8, 16, 32, 64, 128 |
+| 2 | 1, 2, 4, 8, 16, 32, 64 | 2, 4, 8, 16, 32, 64, 128 |
+| 4 | 1, 2, 4, 8, 16, 32 | 4, 8, 16, 32, 64, 128 |
+| 8 | 1, 2, 4, 8, 16 | 8, 16, 32, 64, 128 |
+| 16| 1, 2, 4, 8 | 16, 32, 64, 128 |
+
+* During the Ring shift process, for a given message size `s`, the amount of data transfering for a complete comminucation is $2 \times s$, reason being that the data is send to the next rank in the ring, and then recieved from the previous rank in the ring; but, the timing is for the whole complete comminucation set. This ponit has been implemented in the calculation of the bandwidth.
+
+
+The Blocking and Non-blocking Ring Shift has been run on HPCC `amr` type of nodes using all combinations of the number of nodes and tanks, as defined in the previous table. The average communication time as a function of the message size has been shown below:
+
+![plot_ringshift](Analysis/Fig03_RingShift.png)
+
+
+
 2. As in Parts 1 and 2, vary the message size from 2 bytes to 4 kb, in powers of 2. Also vary the number of processes used from 2 to `N`, in powers of 2, where `N` is sufficiently large that rank 0 and rank `N-1` are guaranteed to reside on separate nodes (`N` will depend on which cluster you are using on HPCC).
 3. Compute the bandwidth and latency, as above. Plot the bandwidth as a function of message size. Include separate lines for each number of processes used. 
 4. Analyze and discuss your results. Explain the behavior of the resulting curves.
 
-## Part 4: Non-blocking MPI Ring Shift
-
-Repeat Part 3 but using non-blocking communication via `MPI_Isendrecv()`. Compare the results to the blocking case.
-
-## What to turn-in
-
-To your git project repo, commit your final working code for the above exercises and a concise write-up including all plots, and detailed responses to the questions posed concerning your results. 
